@@ -55,12 +55,24 @@ export default function ChildDetailPage() {
   const params = useParams();
   const router = useRouter();
   const childId = params.id as string;
-  const { user } = useAuth();
-  const { children, loading: childLoading, getChildById } = useChildren();
-  const { logs, loading: logsLoading, stats } = useLogs({ childId });
+  useAuth();
+  const { loading: childLoading, getChildById } = useChildren();
+  const { logs } = useLogs({ childId });
   
   const [child, setChild] = useState<ChildWithRelation | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  // Estado para filtros de logs
+  const [logSearch, setLogSearch] = useState('');
+  const [logCategory, setLogCategory] = useState('');
+
+  // Filtrado de logs
+  const filteredLogs = logs.filter(log => {
+    const matchesCategory = logCategory ? log.category_name === logCategory : true;
+    const matchesSearch = logSearch
+      ? log.content.toLowerCase().includes(logSearch.toLowerCase())
+      : true;
+    return matchesCategory && matchesSearch;
+  });
 
   useEffect(() => {
     if (childId && !childLoading) {
@@ -235,7 +247,7 @@ export default function ChildDetailPage() {
             <div className="flex items-center space-x-2">
               <UsersIcon className="h-5 w-5 text-gray-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{child.user_relations?.length || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{child.user_relations?.length ?? 0}</p>
                 <p className="text-xs text-gray-600">Usuarios</p>
               </div>
             </div>
@@ -325,7 +337,7 @@ export default function ChildDetailPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {log.category_name || 'Sin categoría'}
+                            {log.category_name ?? 'Sin categoría'}
                           </p>
                           <span className="text-xs text-gray-500">
                             {format(new Date(log.created_at), 'dd MMM, HH:mm', { locale: es })}
@@ -392,7 +404,7 @@ export default function ChildDetailPage() {
                         </Avatar>
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {relation.user_name || relation.user_email}
+                            {relation.user_name ?? relation.user_email}
                           </p>
                           <Badge 
                             variant="secondary" 
@@ -455,8 +467,93 @@ export default function ChildDetailPage() {
               </Card>
             </div>
           </div>
-        </TabsContent>
-
+              {/* Lista detallada de logs con filtros */}
+              <div className="mb-4 flex flex-col md:flex-row md:items-center md:space-x-4 space-y-2 md:space-y-0">
+                <input
+                  type="text"
+                  placeholder="Buscar por contenido..."
+                  className="border rounded px-3 py-2 text-sm w-full md:w-64"
+                  value={logSearch}
+                  onChange={e => setLogSearch(e.target.value)}
+                />
+                <select
+                  className="border rounded px-3 py-2 text-sm w-full md:w-48"
+                  value={logCategory}
+                  onChange={e => setLogCategory(e.target.value)}
+                >
+                  <option value="">Todas las categorías</option>
+                  {[...new Set(logs.map(log => log.category_name).filter(Boolean))].map(cat => (
+                    <option key={cat} value={cat as string}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700">Fecha</th>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700">Categoría</th>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700">Contenido</th>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700">Privado</th>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700">Seguimiento</th>
+                      <th className="px-4 py-2 text-left font-semibold text-gray-700">Revisado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLogs.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="text-center py-8 text-gray-500">
+                          No se encontraron registros.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredLogs.map(log => (
+                        <tr key={log.id} className="border-b last:border-0">
+                          <td className="px-4 py-2 whitespace-nowrap">
+                            {format(new Date(log.created_at), 'dd MMM yyyy, HH:mm', { locale: es })}
+                          </td>
+                          <td className="px-4 py-2 whitespace-nowrap">
+                            <span className="inline-flex items-center">
+                              <span
+                                className="w-3 h-3 rounded-full mr-2"
+                                style={{ backgroundColor: log.category_color }}
+                              />
+                              {log.category_name ?? 'Sin categoría'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 max-w-xs truncate" title={log.content}>
+                            {log.content}
+                          </td>
+                          <td className="px-4 py-2 text-center">
+                            {log.is_private && (
+                              <Badge variant="secondary" className="text-xs">
+                                <EyeIcon className="h-3 w-3 mr-1" />
+                                Sí
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-center">
+                            {log.follow_up_required && (
+                              <Badge variant="outline" className="text-xs text-orange-600">
+                                <ClockIcon className="h-3 w-3 mr-1" />
+                                Sí
+                              </Badge>
+                            )}
+                          </td>
+                          <td className="px-4 py-2 text-center">
+                            {log.reviewed_by && (
+                              <Badge variant="outline" className="text-xs text-green-600">
+                                <CheckCircleIcon className="h-3 w-3 mr-1" />
+                                Sí
+                              </Badge>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
         {/* Tab: Logs */}
         <TabsContent value="logs">
           <Card>
