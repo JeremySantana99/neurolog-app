@@ -117,7 +117,7 @@ export function AddLogDialog({ open, onOpenChange, preselectedChildId }: Readonl
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "No se pudo agregar el registro",
+        description: error.message ?? "No se pudo agregar el registro",
         variant: "destructive",
       })
     } finally {

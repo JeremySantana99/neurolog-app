@@ -308,7 +308,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         </Label>
         <ItemsList 
           field="allergies" 
-          items={medicalInfo.allergies || []} 
+          items={medicalInfo.allergies ?? []} 
           placeholder="Agregar alergia..." 
         />
       </div>
@@ -317,7 +317,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         <Label className="text-base font-medium mb-3 block">Medicamentos</Label>
         <ItemsList 
           field="medications" 
-          items={medicalInfo.medications || []} 
+          items={medicalInfo.medications ?? []} 
           placeholder="Agregar medicamento..." 
         />
       </div>
@@ -326,7 +326,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         <Label className="text-base font-medium mb-3 block">Condiciones Médicas</Label>
         <ItemsList 
           field="conditions" 
-          items={medicalInfo.conditions || []} 
+          items={medicalInfo.conditions ?? []} 
           placeholder="Agregar condición..." 
         />
       </div>
@@ -335,7 +335,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         <Label htmlFor="emergency-notes">Notas de Emergencia</Label>
         <Textarea
           id="emergency-notes"
-          value={medicalInfo.emergency_notes || ''}
+          value={medicalInfo.emergency_notes ?? ''}
           onChange={(e) => onChange({
             ...medicalInfo,
             emergency_notes: e.target.value
@@ -354,7 +354,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: Readonly<Educational
 
   const addItem = (field: string, value: string, setter: (value: string) => void) => {
     if (value.trim()) {
-      const currentItems = educationalInfo[field] || [];
+      const currentItems = educationalInfo[field] ?? [];
       onChange({
         ...educationalInfo,
         [field]: [...currentItems, value.trim()]
@@ -378,7 +378,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: Readonly<Educational
           <Label htmlFor="school">Institución Educativa</Label>
           <Input
             id="school"
-            value={educationalInfo.school || ''}
+            value={educationalInfo.school ?? ''}
             onChange={(e) => onChange({
               ...educationalInfo,
               school: e.target.value
@@ -391,7 +391,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: Readonly<Educational
           <Label htmlFor="grade">Grado/Nivel</Label>
           <Input
             id="grade"
-            value={educationalInfo.grade || ''}
+            value={educationalInfo.grade ?? ''}
             onChange={(e) => onChange({
               ...educationalInfo,
               grade: e.target.value

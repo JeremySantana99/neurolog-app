@@ -495,7 +495,7 @@ function FiltersBar({ filters, onFiltersChange, children, totalCount, filteredCo
 
           {/* Follow-up Status */}
           <Select 
-            value={filters.follow_up_status || 'all'} 
+            value={filters.follow_up_status ?? 'all'} 
             onValueChange={(value) => onFiltersChange({ 
               ...filters, 
               follow_up_status: value === 'all' ? undefined : value as any
@@ -541,8 +541,8 @@ export default function LogsPage() {
 
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<LogFilters>({
-    child_id: searchParams.get('child_id') || undefined,
-    category_id: searchParams.get('category_id') || undefined,
+    child_id: searchParams.get('child_id') ?? undefined,
+    category_id: searchParams.get('category_id') ?? undefined,
   });
 
   // Aplicar filtros
