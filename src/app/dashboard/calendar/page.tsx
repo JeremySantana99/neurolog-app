@@ -115,9 +115,14 @@ export default function CalendarPage() {
               >
                 {format(day, 'd')}
                 {/* Placeholder for events */}
-                {Math.random() > 0.8 && (
-                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></div>
-                )}
+                {(() => {
+                      // Generador decorativo sin implicación de seguridad
+                  const showDot = Math.random() > 0.8;
+                  return showDot ? (
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></div>
+                  ) : null;
+                })()}
+
               </div>
             ))}
           </div>
