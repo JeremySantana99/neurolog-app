@@ -82,7 +82,7 @@ function QuickStats({ stats, loading }: Readonly<QuickStatsProps>) {
       bgColor: 'bg-purple-50',
       borderColor: 'border-purple-200',
       description: 'Nuevos registros',
-      trend: stats.weekly_growth || 0
+      trend: stats.weekly_growth ?? 0
     },
     {
       title: 'Pendientes',
@@ -471,7 +471,9 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <AccessibleChildren children={children} loading={childrenLoading} />
+              <AccessibleChildren loading={childrenLoading}>
+                {children}
+              </AccessibleChildren>
             </CardContent>
           </Card>
         </div>
