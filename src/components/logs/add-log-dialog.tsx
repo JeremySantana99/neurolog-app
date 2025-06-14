@@ -38,9 +38,9 @@ interface FormData {
   log_date: string
 }
 
-export function AddLogDialog({ open, onOpenChange, preselectedChildId }: AddLogDialogProps) {
+export function AddLogDialog({ open, onOpenChange, preselectedChildId }: Readonly<AddLogDialogProps>) {
   const [formData, setFormData] = useState<FormData>({
-    child_id: preselectedChildId || '',
+    child_id: preselectedChildId ?? '',
     category_id: '',
     title: '',
     content: '',
@@ -70,7 +70,7 @@ export function AddLogDialog({ open, onOpenChange, preselectedChildId }: AddLogD
 
   const resetForm = () => {
     setFormData({
-      child_id: preselectedChildId || '',
+      child_id: preselectedChildId ?? '',
       category_id: '',
       title: '',
       content: '',
