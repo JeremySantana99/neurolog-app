@@ -35,24 +35,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useChildren } from '@/hooks/use-children';
 import { useLogs } from '@/hooks/use-logs';
-import { supabase, uploadFile, getPublicUrl, STORAGE_BUCKETS } from '@/lib/supabase';
+import { supabase, uploadFile, getPublicUrl } from '@/lib/supabase';
 import type { 
   DailyLog, 
   LogInsert, 
   LogUpdate, 
   Category, 
-  IntensityLevel,
-  LogAttachment,
-  ChildWithRelation
+  LogAttachment
 } from '@/types';
 import { 
-  CalendarIcon, 
   ImageIcon, 
   PlusIcon, 
   TrashIcon, 
   SaveIcon,
-  HeartIcon,
-  AlertTriangleIcon,
   EyeIcon,
   EyeOffIcon,
   TagIcon,
@@ -211,7 +206,7 @@ function AttachmentsManager({ attachments, onChange, childId }: AttachmentsManag
         else if (file.type.startsWith('audio/')) type = 'audio';
         
         newAttachments.push({
-          id: `${Date.now()}-${Math.random()}`,
+          id: `${Date.now()}-${crypto.randomUUID()}`,
           name: file.name,
           url,
           type,
