@@ -291,7 +291,7 @@ export default function NewChildPage() {
                 </Label>
                 <Input
                   id="school"
-                  value={formData.educational_info?.school || ''}
+                  value={formData.educational_info?.school ?? ''}
                   onChange={(e) => setFormData({
                     ...formData,
                     educational_info: {
