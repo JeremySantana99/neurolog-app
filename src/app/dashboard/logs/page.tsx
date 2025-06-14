@@ -495,7 +495,7 @@ function FiltersBar({ filters, onFiltersChange, children, totalCount, filteredCo
 
           {/* Follow-up Status */}
           <Select 
-            value={filters.follow_up_status ?? 'all'} 
+            value={filters.follow_up_status || 'all'} 
             onValueChange={(value) => onFiltersChange({ 
               ...filters, 
               follow_up_status: value === 'all' ? undefined : value as any
@@ -541,8 +541,8 @@ export default function LogsPage() {
 
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<LogFilters>({
-    child_id: searchParams.get('child_id') ?? undefined,
-    category_id: searchParams.get('category_id') ?? undefined,
+    child_id: searchParams.get('child_id') || undefined,
+    category_id: searchParams.get('category_id') || undefined,
   });
 
   // Aplicar filtros
@@ -583,21 +583,18 @@ export default function LogsPage() {
         </div>
         
         <div className="space-y-4">
-          {[...Array(5)].map((_, i) => {
-            const uniqueKey = `skeleton-card-${i}-${Math.random().toString(36).substr(2, 9)}`;
-            return (
-              <Card key={uniqueKey} className="p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
-                    <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2" />
-                    <div className="h-3 bg-gray-200 rounded animate-pulse w-full" />
-                  </div>
+          {[...Array(5)].map((_, i) => (
+            <Card key={i} className="p-6">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2" />
+                  <div className="h-3 bg-gray-200 rounded animate-pulse w-full" />
                 </div>
-              </Card>
-            );
-          })}
+              </div>
+            </Card>
+          ))}
         </div>
       </div>
     );
